@@ -59,7 +59,7 @@ if(!Host::exist($result_array['ip'])) {
         die("Secured");
     }
 
-    $result_query_prepare = $prepared->bind_param("ss", $result_array['ip'], $result_array['ip_str'], $result_array['last_update']);
+    $result_query_prepare = $prepared->bind_param("sss", $result_array['ip'], $result_array['ip_str'], $result_array['last_update']);
     if ($result_query_prepare == false) {
         die("Secured");
     }
