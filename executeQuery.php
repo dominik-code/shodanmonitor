@@ -15,6 +15,7 @@ curl_setopt($ch, CURLOPT_URL, $url);
 
 // Execute
 $result = curl_exec($ch);
+$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 // Closing
 curl_close($ch);
 
@@ -22,6 +23,9 @@ curl_close($ch);
 $result_array = json_decode($result, true);
 //var_dump($result_array);
 
+if($http_status != "200") {
+    exit("Wrong HTTP Status Code: $http_status");
+}
 
 if(isset($result_array['error'])) {
     // happens if "No information available for that IP."
