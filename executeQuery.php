@@ -13,9 +13,9 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 // Set the url
 curl_setopt($ch, CURLOPT_URL, $url);
 
-$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 // Execute
 $result = curl_exec($ch);
+$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 // Closing
 curl_close($ch);
 
