@@ -1,6 +1,11 @@
 <?php
 
 require_once 'config.php';
+require_once 'Host.class.php';
+require_once 'Hostname.class.php';
+require_once 'Port.class.php';
+require_once 'Tag.class.php';
+require_once 'Vuln.class.php';
 
 $ipv4 = "9.9.9.9";
 $apikey = APIKEY;
@@ -38,6 +43,58 @@ $connection = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
 if ($connection->connect_error) {
     die("Secured");
 }
+
+if (!isset($result_array['ip'])) {
+    // ip as integer 12345678
+    die("No IP given");
+}
+
+
+if(!Host::exist($result_array['ip'])) {
+    // insert
+
+
+    $prepared = $connection->prepare("INSERT INTO `host` ( `ip` , `ip_str` , `last_update` ) VALUES ( ? , ? , ? ) ; ");
+    if ($prepared == false) {
+        die("Secured");
+    }
+
+    $result_query_prepare = $prepared->bind_param("ss", $result_array['ip'], $result_array['ip_str'], $result_array['last_update']);
+    if ($result_query_prepare == false) {
+        die("Secured");
+    }
+
+    $result_query_execute = $prepared->execute();
+    if ($result_query_execute == false) {
+        die("Secured");
+
+    }
+
+    $prepared->close();
+
+}
+
+$host = new Host($result_array['ip']);
+
+
+var_dump($host);
+
+$connection->close();
+die();
+
+
+// start by adding host to table host
+
+// if host already exist take the following actions
+
+//  - remove tags via host_id
+//  - remove hostnames via host_id
+//  - remove vulns via host_id
+//  - remove ports via host_id
+
+//  - update main host entry according to the JSON result
+//  - add tags, hostnames, vulns, ports || use existing entries
+
 
 
 // check if array key exist and than generate the query based on result
@@ -131,21 +188,4 @@ if (isset($result_array[''])) {
 }
 
 
-$prepared = $connection->prepare("INSERT INTO `host` ( `ip` , `ip_str` , `last_update` ) VALUES ( ? , ? , ? ) ; ");
-if ($prepared == false) {
-    die("Secured");
-}
-
-$result_query_prepare = $prepared->bind_param("ss", $result_array['ip'], $result_array['ip_str'], $last_update);
-if ($result_query_prepare == false) {
-    die("Secured");
-}
-
-$result_query_execute = $prepared->execute();
-if ($result_query_execute == false) {
-    die("Secured");
-
-}
-
-$prepared->close();
 $connection->close();
