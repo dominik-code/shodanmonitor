@@ -28,13 +28,64 @@ class Host {
             echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
         }
 
-        for ($row_no = ($res->num_rows - 1); $row_no >= 0; $row_no--) {
-            $res->data_seek($row_no);
-            var_dump($res->fetch_assoc());
-        }
+        $data = $res->fetch_assoc();
+
+        $this->id = $data['id'];
+        $this->ip_str = $data['ip_str'];
+
         $res->close();
 
     }
+
+    // multiple values
+
+    public function updateHostnames($hostnames) {
+
+    }
+
+    public function updatePorts($ports) {
+
+    }
+
+    public function updateVulns($vulns) {
+
+    }
+
+    public function updateTags($tags) {
+
+    }
+
+    // single values
+
+    public function updateLastUpdate($lastUpdate) {
+
+    }
+
+    public function updateCountry($country_code, $country_code3, $country_name) {
+
+    }
+
+    public function updateLocation($latitude, $longitude) {
+
+    }
+
+    public function updateASN($asn) {
+
+    }
+
+    public function updateISP($isp) {
+
+    }
+
+    public function updateOS($os) {
+
+    }
+
+    public function updateORG($org) {
+
+    }
+
+
 
     public static function exist($ip) {
         $rows = 0;
