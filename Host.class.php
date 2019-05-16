@@ -37,7 +37,66 @@ class Host {
     }
 
     public static function exist($ip) {
-        return false;
+        $rows = 0;
+
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
+        if ($mysqli->connect_error) {
+            die("Secured");
+        }
+
+
+        $query = "SELECT id FROM host WHERE ip = ?";
+        if ($stmt = $mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("s", $ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            $rows = $stmt->num_rows;
+
+
+            /* close statement */
+            $stmt->close();
+        }
+
+        var_dump($rows);
+        if ($rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function create($ip, $ip_str, $last_update) {
+        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
+        if ($mysqli->connect_error) {
+            die("Secured");
+        }
+
+        $prepared = $mysqli->prepare("INSERT INTO `host` ( `ip` , `ip_str` , `last_update` ) VALUES ( ? , ? , ? ) ; ");
+        if ($prepared == false) {
+            die("Secured");
+        }
+
+        $result_query_prepare = $prepared->bind_param("sss", $ip, $ip_str, $last_update);
+        if ($result_query_prepare == false) {
+            die("Secured");
+        }
+
+        $result_query_execute = $prepared->execute();
+        if ($result_query_execute == false) {
+            die("Secured");
+        }
+
+        $prepared->close();
+        $mysqli->close();
     }
 
 

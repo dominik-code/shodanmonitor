@@ -39,10 +39,6 @@ if(isset($result_array['error'])) {
 
 
 
-$connection = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
-if ($connection->connect_error) {
-    die("Secured");
-}
 
 if (!isset($result_array['ip'])) {
     // ip as integer 12345678
@@ -53,24 +49,9 @@ if (!isset($result_array['ip'])) {
 if(!Host::exist($result_array['ip'])) {
     // insert
 
+    Host::create($result_array['ip'], $result_array['ip_str'], $result_array['last_update']);
 
-    $prepared = $connection->prepare("INSERT INTO `host` ( `ip` , `ip_str` , `last_update` ) VALUES ( ? , ? , ? ) ; ");
-    if ($prepared == false) {
-        die("Secured");
-    }
 
-    $result_query_prepare = $prepared->bind_param("sss", $result_array['ip'], $result_array['ip_str'], $result_array['last_update']);
-    if ($result_query_prepare == false) {
-        die("Secured");
-    }
-
-    $result_query_execute = $prepared->execute();
-    if ($result_query_execute == false) {
-        die("Secured");
-
-    }
-
-    $prepared->close();
 
 }
 
@@ -79,7 +60,7 @@ $host = new Host($result_array['ip']);
 
 var_dump($host);
 
-$connection->close();
+
 die();
 
 
