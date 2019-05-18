@@ -6,12 +6,48 @@ require_once 'Hostname.class.php';
 require_once 'Port.class.php';
 require_once 'Tag.class.php';
 require_once 'Vuln.class.php';
+require_once 'CIDR.class.php';
 
 
+$mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
+if ($mysqli->connect_error) {
+    die("Secured");
+}
 
-$isValid = filter_var($_REQUEST['ipv4'], FILTER_VALIDATE_IP,FILTER_FLAG_IPV4);
+if (!($stmt = $mysqli->prepare("SELECT * FROM scan"))) {
+    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+}
 
-if(§isValid == false) {
+
+if (!$stmt->execute()) {
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+if (!($res = $stmt->get_result())) {
+    echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+while ($row = $res->fetch_assoc()) {
+    $id = $row['id'];
+    $cidr = $row['cidr'];
+    $name = $row['name'];
+    $user_id = $row['user_id'];
+
+    $ips = CIDR::cidrToRange($cidr);
+    foreach ($ips as $ip) {
+
+        var_dump($ip);
+
+    }
+}
+
+$res->close();
+$mysqli->close();
+
+
+$isValid = filter_var($_REQUEST['ipv4'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+
+if (§isValid == false) {
     die("not correct ipv4 format");
 }
 
@@ -37,7 +73,7 @@ curl_close($ch);
 $result_array = json_decode($result, true);
 
 if ($http_status != "200") {
-    if($http_status == "404") {
+    if ($http_status == "404") {
         exit("No data for this ip");
     }
     exit("Wrong HTTP Status Code: $http_status");
@@ -108,7 +144,6 @@ if (isset($result_array['latitude']) && isset($result_array['longitude'])) {
 
 
 //var_dump($host);
-
 
 
 // start by adding host to table host
