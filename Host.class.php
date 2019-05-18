@@ -64,9 +64,26 @@ class Host {
     // single values
 
     public function updateLastUpdate($lastUpdate) {
-        $lastUpdate_e = mysqli_real_escape_string($this->mysqli, $lastUpdate);
-        $q_update = "UPDATE host SET `last_update` =  $lastUpdate_e WHERE ip = '$this->ip'";
-        mysqli_query($this->mysqli, $q_update);
+        $query = "UPDATE host SET `last_update` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss",$lastUpdate ,$this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            $rows = $stmt->num_rows;
+
+
+            /* close statement */
+            $stmt->close();
+        }
     }
 
     public function updateCountry($country_code, $country_code3, $country_name) {
