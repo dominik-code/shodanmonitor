@@ -141,10 +141,7 @@ class Host {
             $country_id = $this->mysqli->insert_id;
 
             $prepared->close();
-
-
         }
-
 
         $query = "UPDATE host SET `country_id` = ? WHERE ip = ?";
         if ($stmt = $this->mysqli->prepare($query)) {
@@ -168,14 +165,242 @@ class Host {
 
     public function updateLocation($latitude, $longitude) {
 
+        $location_id = null;
+
+        $query = "SELECT id FROM location WHERE latitude = ? AND longitude = ? ";
+
+        if($stmt = $this->mysqli->prepare($query)){
+            /*
+                 Binds variables to prepared statement
+
+                 i    corresponding variable has type integer
+                 d    corresponding variable has type double
+                 s    corresponding variable has type string
+                 b    corresponding variable is a blob and will be sent in packets
+            */
+            $stmt->bind_param('ss',$latitude, $longitude);
+
+            /* execute query */
+            $stmt->execute();
+
+            /* Get the result */
+            $result = $stmt->get_result();
+
+            /* Get the number of rows */
+            $num_of_rows = $result->num_rows;
+
+
+
+            while ($row = $result->fetch_assoc()) {
+                $location_id = $row['id'];
+            }
+
+            /* free results */
+            $stmt->free_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
+        if ($location_id == null) {
+
+            $prepared = $this->mysqli->prepare("INSERT INTO `location` ( `latitude` , `longitude`) VALUES ( ? , ? ) ; ");
+            if ($prepared == false) {
+                die("Secured");
+            }
+
+            $result_query_prepare = $prepared->bind_param("ss", $latitude, $longitude);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            $result_query_execute = $prepared->execute();
+            if ($result_query_execute == false) {
+                die("Secured");
+            }
+
+            $location_id = $this->mysqli->insert_id;
+
+            $prepared->close();
+        }
+
+        $query = "UPDATE host SET `location_id` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", $location_id, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
     }
 
     public function updateASN($asn) {
 
+        $asn_id = null;
+
+        $query = "SELECT id FROM asn WHERE name = ? ";
+
+        if($stmt = $this->mysqli->prepare($query)){
+            /*
+                 Binds variables to prepared statement
+
+                 i    corresponding variable has type integer
+                 d    corresponding variable has type double
+                 s    corresponding variable has type string
+                 b    corresponding variable is a blob and will be sent in packets
+            */
+            $stmt->bind_param('s',$asn);
+
+            /* execute query */
+            $stmt->execute();
+
+            /* Get the result */
+            $result = $stmt->get_result();
+
+            /* Get the number of rows */
+            $num_of_rows = $result->num_rows;
+
+
+
+            while ($row = $result->fetch_assoc()) {
+                $asn_id = $row['id'];
+            }
+
+            /* free results */
+            $stmt->free_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
+        if ($asn_id == null) {
+
+            $prepared = $this->mysqli->prepare("INSERT INTO `asn` ( `name` ) VALUES ( ? ) ; ");
+            if ($prepared == false) {
+                die("Secured");
+            }
+
+            $result_query_prepare = $prepared->bind_param("s", $asn );
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            $result_query_execute = $prepared->execute();
+            if ($result_query_execute == false) {
+                die("Secured");
+            }
+
+            $asn_id = $this->mysqli->insert_id;
+
+            $prepared->close();
+        }
+
+        $query = "UPDATE host SET `asn_id` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", $asn_id, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
     }
 
     public function updateISP($isp) {
+        $isp_id = null;
 
+        $query = "SELECT id FROM asn WHERE name = ? ";
+
+        if($stmt = $this->mysqli->prepare($query)){
+            /*
+                 Binds variables to prepared statement
+
+                 i    corresponding variable has type integer
+                 d    corresponding variable has type double
+                 s    corresponding variable has type string
+                 b    corresponding variable is a blob and will be sent in packets
+            */
+            $stmt->bind_param('s',$isp);
+
+            /* execute query */
+            $stmt->execute();
+
+            /* Get the result */
+            $result = $stmt->get_result();
+
+            /* Get the number of rows */
+            $num_of_rows = $result->num_rows;
+
+
+
+            while ($row = $result->fetch_assoc()) {
+                $isp_id = $row['id'];
+            }
+
+            /* free results */
+            $stmt->free_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
+        if ($isp_id == null) {
+
+            $prepared = $this->mysqli->prepare("INSERT INTO `isp` ( `name` ) VALUES ( ? ) ; ");
+            if ($prepared == false) {
+                die("Secured");
+            }
+
+            $result_query_prepare = $prepared->bind_param("s", $isp );
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            $result_query_execute = $prepared->execute();
+            if ($result_query_execute == false) {
+                die("Secured");
+            }
+
+            $isp_id = $this->mysqli->insert_id;
+
+            $prepared->close();
+        }
+
+        $query = "UPDATE host SET `isp_id` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", $isp_id, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
     }
 
     public function updateOS($os) {
