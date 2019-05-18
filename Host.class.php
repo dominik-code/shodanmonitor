@@ -87,28 +87,36 @@ class Host {
         $country_id = null;
 
         $query = "SELECT id FROM country WHERE country_code = ?";
-        if ($stmt = $this->mysqli->prepare($query)) {
 
-            $result_query_prepare = $stmt->bind_param("s", $country_code);
-            if ($result_query_prepare == false) {
-                die("Secured");
-            }
+        if($stmt = $this->mysqli->prepare($query)){
+            /*
+                 Binds variables to prepared statement
+
+                 i    corresponding variable has type integer
+                 d    corresponding variable has type double
+                 s    corresponding variable has type string
+                 b    corresponding variable is a blob and will be sent in packets
+            */
+            $stmt->bind_param('s',$country_code);
 
             /* execute query */
             $stmt->execute();
 
-            /* store result */
-            $stmt->store_result();
+            /* Get the result */
+            $result = $stmt->get_result();
 
-            $rows = $stmt->num_rows;
-            if (!($res = $stmt->get_result())) {
-                echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
-            } else {
-                if ($rows > 0) {
-                    $data = $res->fetch_assoc();
-                    $country_id = $data['id'];
-                }
+            /* Get the number of rows */
+            $num_of_rows = $result->num_rows;
+
+
+
+            while ($row = $result->fetch_assoc()) {
+                $country_id = $row['id'];
             }
+
+            /* free results */
+            $stmt->free_result();
+
             /* close statement */
             $stmt->close();
         }
