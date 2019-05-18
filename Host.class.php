@@ -64,10 +64,10 @@ class Host {
     // single values
 
     public function updateLastUpdate($lastUpdate) {
-        $query = "UPDATE host SET `last_update_miner` = ? WHERE ip = ?";
+        $query = "UPDATE host SET `last_update_miner` = NOW() WHERE ip = ?";
         if ($stmt = $this->mysqli->prepare($query)) {
 
-            $result_query_prepare = $stmt->bind_param("ss", time(), $this->ip);
+            $result_query_prepare = $stmt->bind_param("s", $this->ip);
             if ($result_query_prepare == false) {
                 die("Secured");
             }
