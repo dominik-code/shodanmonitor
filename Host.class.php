@@ -178,7 +178,7 @@ class Host {
                  s    corresponding variable has type string
                  b    corresponding variable is a blob and will be sent in packets
             */
-            $stmt->bind_param('ss',$latitude, $longitude);
+            $stmt->bind_param('dd',$latitude, $longitude);
 
             /* execute query */
             $stmt->execute();
@@ -209,7 +209,7 @@ class Host {
                 die("Secured");
             }
 
-            $result_query_prepare = $prepared->bind_param("ss", $latitude, $longitude);
+            $result_query_prepare = $prepared->bind_param("dd", $latitude, $longitude);
             if ($result_query_prepare == false) {
                 die("Secured");
             }
