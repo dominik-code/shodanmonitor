@@ -35,9 +35,11 @@ curl_close($ch);
 
 // Will dump a beauty json :3
 $result_array = json_decode($result, true);
-//var_dump($result_array);
 
 if ($http_status != "200") {
+    if($http_status == "404") {
+        exit("No data for this ip");
+    }
     exit("Wrong HTTP Status Code: $http_status");
 }
 
@@ -105,7 +107,7 @@ if (isset($result_array['latitude']) && isset($result_array['longitude'])) {
 }
 
 
-var_dump($host);
+//var_dump($host);
 
 
 
