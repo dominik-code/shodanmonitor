@@ -72,11 +72,27 @@ class Host {
     }
 
     public function updateVulns($vulns) {
-
+        Vuln::removeLinkToHost($this->id);
+        // add all hostnames if not already exist then add the link to host_id
+        foreach ($vulns as $cve) {
+            if(!Vuln::exist($cve)) {
+                Vuln::create($cve);
+            }
+            $vuln = new Vuln($cve);
+            $vuln->linkToHostId($this->id);
+        }
     }
 
     public function updateTags($tags) {
-
+        Tag::removeLinkToHost($this->id);
+        // add all hostnames if not already exist then add the link to host_id
+        foreach ($tags as $tag_str) {
+            if(!Tag::exist($tag_str)) {
+                Tag::create($tag_str);
+            }
+            $tag = new Tag($tag_str);
+            $tag->linkToHostId($this->id);
+        }
     }
 
     // single values
