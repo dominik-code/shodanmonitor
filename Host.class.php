@@ -86,7 +86,6 @@ class Host {
     public function updateCountry($country_code, $country_code3, $country_name) {
         $country_id = null;
 
-
         $query = "SELECT id FROM country WHERE country_code = ?";
         if ($stmt = $this->mysqli->prepare($query)) {
 
@@ -105,11 +104,6 @@ class Host {
             if (!($res = $stmt->get_result())) {
                 echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
             } else {
-
-                /* store result */
-                $stmt->store_result();
-
-                $rows = $stmt->num_rows;
                 if ($rows > 0) {
                     $data = $res->fetch_assoc();
                     $country_id = $data['id'];
