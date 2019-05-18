@@ -247,7 +247,7 @@ class Host {
 
         $asn_id = null;
 
-        $query = "SELECT id FROM asn WHERE name = ? ";
+        $query = "SELECT id FROM asn WHERE `name` = ? ";
 
         if($stmt = $this->mysqli->prepare($query)){
             /*
@@ -327,7 +327,7 @@ class Host {
     public function updateISP($isp) {
         $isp_id = null;
 
-        $query = "SELECT id FROM asn WHERE name = ? ";
+        $query = "SELECT id FROM asn WHERE `name` = ? ";
 
         if($stmt = $this->mysqli->prepare($query)){
             /*
