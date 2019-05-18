@@ -15,7 +15,7 @@ class Hostname {
             die("Secured");
         }
 
-        if (!($stmt = $this->mysqli->prepare("SELECT * FROM hostname where `name` = ?"))) {
+        if (!($stmt = $this->mysqli->prepare("SELECT * FROM hostname where `hostname` = ?"))) {
             echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
         }
 
@@ -81,7 +81,7 @@ class Hostname {
             die("Secured");
         }
 
-        $prepared = $mysqli->prepare("INSERT INTO `hostname` ( `name` ) VALUES ( ? ) ; ");
+        $prepared = $mysqli->prepare("INSERT INTO `hostname` ( `hostname` ) VALUES ( ? ) ; ");
         if ($prepared == false) {
             die("Secured");
         }
