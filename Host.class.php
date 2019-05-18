@@ -104,14 +104,10 @@ class Host {
             $rows = $stmt->num_rows;
             if (!($res = $stmt->get_result())) {
                 echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
-            }
-
-            $data = $res->fetch_assoc();
-
-            if ($rows > 0) {
+            } else {
+                $data = $res->fetch_assoc();
                 $country_id = $data['id'];
             }
-
             /* close statement */
             $stmt->close();
         }
