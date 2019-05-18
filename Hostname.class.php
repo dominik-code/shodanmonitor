@@ -112,7 +112,7 @@ class Hostname {
             die("Secured1");
         }
 
-        $result_query_prepare = $prepared->bind_param("ss", $host_id, $this->id);
+        $result_query_prepare = $prepared->bind_param("ii", $host_id, $this->id);
         if ($result_query_prepare == false) {
             die("Secured2");
         }
