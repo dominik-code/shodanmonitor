@@ -7,7 +7,16 @@ require_once 'Port.class.php';
 require_once 'Tag.class.php';
 require_once 'Vuln.class.php';
 
-$ipv4 = "9.9.9.9";
+
+
+$isValid = filter_var($_REQUEST['ipv4'], FILTER_VALIDATE_IP,FILTER_FLAG_IPV4);
+
+if(§isValid == false) {
+    die("not correct ipv4 format");
+}
+
+$ipv4 = $_REQUEST['ipv4'];
+
 $apikey = APIKEY;
 
 $url = "https://api.shodan.io/shodan/host/$ipv4?key=$apikey&history=False&minify=True";

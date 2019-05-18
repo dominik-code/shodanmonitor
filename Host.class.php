@@ -67,7 +67,30 @@ class Host {
         $query = "UPDATE host SET `last_update` = ? WHERE ip = ?";
         if ($stmt = $this->mysqli->prepare($query)) {
 
-            $result_query_prepare = $stmt->bind_param("ss",$lastUpdate ,$this->ip);
+            $result_query_prepare = $stmt->bind_param("ss", $lastUpdate, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+    }
+
+    public function updateCountry($country_code, $country_code3, $country_name) {
+        $country_id = null;
+
+
+        $query = "SELECT id FROM country WHERE country_code = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("s", $country_code);
             if ($result_query_prepare == false) {
                 die("Secured");
             }
@@ -79,14 +102,62 @@ class Host {
             $stmt->store_result();
 
             $rows = $stmt->num_rows;
+            if (!($res = $stmt->get_result())) {
+                echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
+            }
 
+            $data = $res->fetch_assoc();
+
+            if ($rows > 0) {
+                $country_id = $data['id'];
+            }
 
             /* close statement */
             $stmt->close();
         }
-    }
 
-    public function updateCountry($country_code, $country_code3, $country_name) {
+        if ($country_id == null) {
+
+            $prepared = $this->mysqli->prepare("INSERT INTO `country` ( `country_code` , `country_code3` , `country_name` ) VALUES ( ? , ? , ? ) ; ");
+            if ($prepared == false) {
+                die("Secured");
+            }
+
+            $result_query_prepare = $prepared->bind_param("sss", $country_code, $country_code3, $country_name);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            $result_query_execute = $prepared->execute();
+            if ($result_query_execute == false) {
+                die("Secured");
+            }
+
+            $country_id = $this->mysqli->insert_id;
+
+            $prepared->close();
+
+
+        }
+
+
+        $query = "UPDATE host SET `country_id` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", $country_id, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
 
     }
 
@@ -109,7 +180,6 @@ class Host {
     public function updateORG($org) {
 
     }
-
 
 
     public static function exist($ip) {
