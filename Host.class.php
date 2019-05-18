@@ -64,6 +64,26 @@ class Host {
     // single values
 
     public function updateLastUpdate($lastUpdate) {
+        $query = "UPDATE host SET `last_update_miner` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", time(), $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
+
+
         $query = "UPDATE host SET `last_update` = ? WHERE ip = ?";
         if ($stmt = $this->mysqli->prepare($query)) {
 
