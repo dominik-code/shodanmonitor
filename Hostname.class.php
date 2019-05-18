@@ -47,7 +47,7 @@ class Hostname {
         }
 
 
-        $query = "SELECT id FROM hostname WHERE `name` = ?";
+        $query = "SELECT id FROM hostname WHERE `hostname` = ?";
         if ($stmt = $mysqli->prepare($query)) {
 
             $result_query_prepare = $stmt->bind_param("s", $hostname);
