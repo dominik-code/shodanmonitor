@@ -29,9 +29,9 @@ class Hostname {
             echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
         }
 
-        $data = $res->fetch_assoc();
-
-        $this->id = $data['id'];
+        while ($row = $res->fetch_assoc()) {
+            $this->id = $row['id'];
+        }
 
         $res->close();
 
