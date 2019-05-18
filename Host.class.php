@@ -46,7 +46,16 @@ class Host {
     // multiple values
 
     public function updateHostnames($hostnames) {
-
+        // delete all existing links to the ip
+        Hostname::removeLinkToHost($this->id);
+        // add all hostnames if not already exist then add the link to host_id
+        foreach ($hostnames as $hostname_str) {
+            if(!Hostname::exist($hostname_str)) {
+                Hostname::create($hostname_str);
+            }
+            $hostname = new Hostname($hostname_str);
+            $hostname->linkToHostId($this->id);
+        }
     }
 
     public function updatePorts($ports) {
@@ -614,7 +623,6 @@ class Host {
             $stmt->close();
         }
 
-        var_dump($rows);
         if ($rows > 0) {
             return true;
         } else {
