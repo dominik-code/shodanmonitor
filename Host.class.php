@@ -7,15 +7,17 @@ class Host {
     private $ip = -1;
     private $ip_str = "";
 
+    private $mysqli = null;
+
     public function __construct($ip) {
         $this->ip = $ip;
-        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
-        if ($mysqli->connect_error) {
+        $this->mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
+        if ($this->mysqli->connect_error) {
             die("Secured");
         }
 
-        if (!($stmt = $mysqli->prepare("SELECT * FROM host where ip = ?"))) {
-            echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        if (!($stmt = $this->mysqli->prepare("SELECT * FROM host where ip = ?"))) {
+            echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
         }
 
         $stmt->bind_param("i", $this->id);
@@ -35,6 +37,10 @@ class Host {
 
         $res->close();
 
+    }
+
+    public function __destruct() {
+        $this->mysqli->close();
     }
 
     // multiple values
@@ -58,7 +64,9 @@ class Host {
     // single values
 
     public function updateLastUpdate($lastUpdate) {
-
+        $lastUpdate_e = mysqli_real_escape_string($this->mysqli, $lastUpdate);
+        $q_update = "UPDATE host SET `last_update` =  $lastUpdate_e WHERE ip = '$this->ip'";
+        mysqli_query($this->mysqli, $q_update);
     }
 
     public function updateCountry($country_code, $country_code3, $country_name) {
