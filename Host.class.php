@@ -405,10 +405,162 @@ class Host {
 
     public function updateOS($os) {
 
+        $os_id = null;
+
+        $query = "SELECT id FROM os WHERE `name` = ? ";
+
+        if($stmt = $this->mysqli->prepare($query)){
+            /*
+                 Binds variables to prepared statement
+
+                 i    corresponding variable has type integer
+                 d    corresponding variable has type double
+                 s    corresponding variable has type string
+                 b    corresponding variable is a blob and will be sent in packets
+            */
+            $stmt->bind_param('s',$os);
+
+            /* execute query */
+            $stmt->execute();
+
+            /* Get the result */
+            $result = $stmt->get_result();
+
+            /* Get the number of rows */
+            $num_of_rows = $result->num_rows;
+
+
+
+            while ($row = $result->fetch_assoc()) {
+                $os_id = $row['id'];
+            }
+
+            /* free results */
+            $stmt->free_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
+        if ($os_id == null) {
+
+            $prepared = $this->mysqli->prepare("INSERT INTO `os` ( `name` ) VALUES ( ? ) ; ");
+            if ($prepared == false) {
+                die("Secured");
+            }
+
+            $result_query_prepare = $prepared->bind_param("s", $os );
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            $result_query_execute = $prepared->execute();
+            if ($result_query_execute == false) {
+                die("Secured");
+            }
+
+            $os_id = $this->mysqli->insert_id;
+
+            $prepared->close();
+        }
+
+        $query = "UPDATE host SET `os_id` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", $os_id, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
     }
 
     public function updateORG($org) {
+        $org_id = null;
 
+        $query = "SELECT id FROM org WHERE `name` = ? ";
+
+        if($stmt = $this->mysqli->prepare($query)){
+            /*
+                 Binds variables to prepared statement
+
+                 i    corresponding variable has type integer
+                 d    corresponding variable has type double
+                 s    corresponding variable has type string
+                 b    corresponding variable is a blob and will be sent in packets
+            */
+            $stmt->bind_param('s',$org);
+
+            /* execute query */
+            $stmt->execute();
+
+            /* Get the result */
+            $result = $stmt->get_result();
+
+            /* Get the number of rows */
+            $num_of_rows = $result->num_rows;
+
+
+
+            while ($row = $result->fetch_assoc()) {
+                $org_id = $row['id'];
+            }
+
+            /* free results */
+            $stmt->free_result();
+
+            /* close statement */
+            $stmt->close();
+        }
+
+        if ($org_id == null) {
+
+            $prepared = $this->mysqli->prepare("INSERT INTO `org` ( `name` ) VALUES ( ? ) ; ");
+            if ($prepared == false) {
+                die("Secured");
+            }
+
+            $result_query_prepare = $prepared->bind_param("s", $org );
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            $result_query_execute = $prepared->execute();
+            if ($result_query_execute == false) {
+                die("Secured");
+            }
+
+            $org_id = $this->mysqli->insert_id;
+
+            $prepared->close();
+        }
+
+        $query = "UPDATE host SET `org_id` = ? WHERE ip = ?";
+        if ($stmt = $this->mysqli->prepare($query)) {
+
+            $result_query_prepare = $stmt->bind_param("ss", $org_id, $this->ip);
+            if ($result_query_prepare == false) {
+                die("Secured");
+            }
+
+            /* execute query */
+            $stmt->execute();
+
+            /* store result */
+            $stmt->store_result();
+
+            /* close statement */
+            $stmt->close();
+        }
     }
 
 
