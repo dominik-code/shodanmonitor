@@ -59,7 +59,16 @@ class Host {
     }
 
     public function updatePorts($ports) {
-
+        // delete all existing links to the ip
+        Port::removeLinkToHost($this->id);
+        // add all hostnames if not already exist then add the link to host_id
+        foreach ($ports as $port_number) {
+            if(!Port::exist($port_number)) {
+                Port::create($port_number);
+            }
+            $port = new Port($port_number);
+            $port->linkToHostId($this->id);
+        }
     }
 
     public function updateVulns($vulns) {

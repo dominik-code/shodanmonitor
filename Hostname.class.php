@@ -15,11 +15,11 @@ class Hostname {
             die("Secured");
         }
 
-        if (!($stmt = $this->mysqli->prepare("SELECT id FROM hostname where `hostname` = ?"))) {
+        if (!($stmt = $this->mysqli->prepare("SELECT id, hostname FROM hostname where `hostname` = ?"))) {
             echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
         }
 
-        $stmt->bind_param("i", $this->hostname);
+        $stmt->bind_param("s", $this->hostname);
 
         if (!$stmt->execute()) {
             echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
@@ -31,6 +31,7 @@ class Hostname {
 
         while ($row = $res->fetch_assoc()) {
             $this->id = $row['id'];
+            $this->hostname = $row['hostname'];
         }
 
         $res->close();
