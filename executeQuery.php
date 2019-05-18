@@ -36,13 +36,13 @@ while ($row = $res->fetch_assoc()) {
     $ips = CIDR::cidrToRange($cidr);
     foreach ($ips as $ip) {
         if (Host::exist(ip2long($ip))) {
-            echo "Host already exist skipping scan in favor of new hosts";
+            echo "Host: $ip already exist skipping scan in favor of new hosts . <br>";
             continue;
         }
 
 
-        usleep(500000);
         echo "Scanning: ". $ip . "<br>";
+        usleep(500000);
 
 
         $isValid = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
