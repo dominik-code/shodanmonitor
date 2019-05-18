@@ -8,6 +8,8 @@ require_once 'Tag.class.php';
 require_once 'Vuln.class.php';
 require_once 'CIDR.class.php';
 
+$starttime = microtime(true);
+
 
 $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DATABASE);
 if ($mysqli->connect_error) {
@@ -35,6 +37,12 @@ while ($row = $res->fetch_assoc()) {
 
     $ips = CIDR::cidrToRange($cidr);
     foreach ($ips as $ip) {
+        $runtime = microtime(true) - $starttime;
+        if($runtime > 45.0) {
+            exit("Runtime limit reached aborting scan for now <br>");
+        }
+
+
         if (Host::exist(ip2long($ip))) {
             echo "Host: $ip already exist skipping scan in favor of new hosts. <br>";
             continue;
