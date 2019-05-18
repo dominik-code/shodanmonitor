@@ -20,7 +20,7 @@ class Host {
             echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
         }
 
-        $stmt->bind_param("i", $this->id);
+        $stmt->bind_param("s", $this->ip);
 
         if (!$stmt->execute()) {
             echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
@@ -30,10 +30,10 @@ class Host {
             echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
         }
 
-        $data = $res->fetch_assoc();
-
-        $this->id = $data['id'];
-        $this->ip_str = $data['ip_str'];
+        while ($row = $res->fetch_assoc()) {
+            $this->id = $row['id'];
+            $this->ip_str = $row['ip_str'];
+        }
 
         $res->close();
 
