@@ -36,7 +36,7 @@ while ($row = $res->fetch_assoc()) {
     $ips = CIDR::cidrToRange($cidr);
     foreach ($ips as $ip) {
         if (Host::exist(ip2long($ip))) {
-            echo "Host: $ip already exist skipping scan in favor of new hosts . <br>";
+            echo "Host: $ip already exist skipping scan in favor of new hosts. <br>";
             continue;
         }
 
@@ -75,7 +75,8 @@ while ($row = $res->fetch_assoc()) {
 
         if ($http_status != "200") {
             if ($http_status == "404") {
-                echo "No data for this ip";
+                Host::create(ip2long($ip), $ip, null);
+                echo "No data for this ip: $ipv4 <br>";
                 continue;
             }
             exit("Wrong HTTP Status Code: $http_status");
