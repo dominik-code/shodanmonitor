@@ -18,7 +18,7 @@ function scanIP($starttime, $ip) {
 
     if (Host::exist(ip2long($ip))) {
         echo "Host: $ip already exist skipping scan in favor of new hosts. <br>";
-        return;
+        return array(true, "entry exist");
     }
 
 
@@ -50,7 +50,7 @@ function scanIP($starttime, $ip) {
         if ($http_status == "404") {
             Host::create(ip2long($ip), $ip, null);
             echo "No data for this ip: $ipv4 <br>";
-            return;
+            array(false, "empty entry created");
         }
         exit("Wrong HTTP Status Code: $http_status");
     }
@@ -162,8 +162,18 @@ while ($row = $res->fetch_assoc()) {
     $user_id = $row['user_id'];
 
     $ips = CIDR::cidrToRange($cidr);
+    $skipped = 0;
+
     foreach ($ips as $ip) {
-        scanIP($starttime, $ip);
+        if($skipped <= 0) {
+            $result = scanIP($starttime, $ip);
+            if(is_array($result)) {
+                if($result[0] == true) {
+                    $skipped = 16;
+                }
+            }
+        }
+        $skipped--;
     }
 }
 
