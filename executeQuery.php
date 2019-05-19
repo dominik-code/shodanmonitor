@@ -50,7 +50,7 @@ function scanIP($starttime, $ip) {
         if ($http_status == "404") {
             Host::create(ip2long($ip), $ip, null);
             echo "No data for this ip: $ipv4 <br>";
-            array(false, "empty entry created");
+            return array(false, "empty entry created");
         }
         exit("Wrong HTTP Status Code: $http_status");
     }
